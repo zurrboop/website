@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Threadly - Clothing Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top" aria-label="Threadly home"><span class="brand-mark">T</span> Threadly</a>
+
+      <label class="search" aria-label="Search products">
+        <span aria-hidden="true">🔍</span>
+        <input type="search" id="search" placeholder="Search jackets, shoes, hoodies..." autocomplete="off">
+      </label>
+
+      <button class="cart-btn" id="openCart" type="button" aria-label="Open cart">
+        <span aria-hidden="true">🛒</span>
+        <span class="cart-label">Cart</span>
+        <span class="badge" id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+      <div class="hero-text">
+        <span class="pill">New season</span>
+        <h1>Everyday style, <br>delivered to your door.</h1>
+        <p>Comfortable, modern clothing at fair prices. Free delivery on orders over Rs. 5,000.</p>
+        <a class="btn primary" href="#shop">Shop now</a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <span>👕</span><span>🧥</span><span>👟</span>
+      </div>
+    </section>
+
+    <!-- ===== Shop ===== -->
+    <section class="shop" id="shop">
+      <div class="shop-head">
+        <h2>All products <small id="resultCount"></small></h2>
+        <label class="sort">
+          <span>Sort by</span>
+          <select id="sort">
+            <option value="featured">Featured</option>
+            <option value="low">Price: low to high</option>
+            <option value="high">Price: high to low</option>
+            <option value="name">Name: A to Z</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="chips" id="categories" role="group" aria-label="Filter by category"></div>
+
+      <div class="grid" id="grid"></div>
+      <p class="empty" id="emptyMsg" hidden>😕 No products match your search. Try something else.</p>
+    </section>
+
+    <!-- ===== Perks ===== -->
+    <section class="perks">
+      <div><span>🚚</span><b>Fast delivery</b><small>2 to 4 working days</small></div>
+      <div><span>↩️</span><b>Easy returns</b><small>7-day return policy</small></div>
+      <div><span>💵</span><b>Cash on delivery</b><small>Pay when it arrives</small></div>
+      <div><span>🔒</span><b>Secure checkout</b><small>Your details stay private</small></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p><b>Threadly</b> &middot; Student project: a responsive e-commerce website. Products are demo items.</p>
+  </footer>
+
+  <!-- ===== Overlay ===== -->
+  <div class="overlay" id="overlay" hidden></div>
+
+  <!-- ===== Product modal ===== -->
+  <div class="modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="pTitle" hidden>
+    <div class="modal-card product-card-lg">
+      <button class="close" type="button" data-close aria-label="Close">✕</button>
+      <div class="p-thumb" id="pThumb" aria-hidden="true"></div>
+      <div class="p-info">
+        <span class="tag" id="pCategory"></span>
+        <h3 id="pTitle"></h3>
+        <p class="rating" id="pRating"></p>
+        <p class="p-desc" id="pDesc"></p>
+        <label class="size-row">
+          <span>Size</span>
+          <select id="pSize">
+            <option>S</option><option selected>M</option><option>L</option><option>XL</option>
+          </select>
+        </label>
+        <div class="p-buy">
+          <b class="price" id="pPrice"></b>
+          <button class="btn primary" type="button" id="pAdd">Add to cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Cart drawer ===== -->
+  <aside class="drawer" id="cart" aria-label="Shopping cart" aria-hidden="true">
+    <div class="drawer-head">
+      <h2>Your cart</h2>
+      <button class="close static" type="button" data-close aria-label="Close cart">✕</button>
+    </div>
+
+    <ul class="cart-list" id="cartList"></ul>
+    <div class="cart-empty" id="cartEmpty" hidden>
+      <span aria-hidden="true">🛍️</span>
+      <p>Your cart is empty.</p>
+      <button class="btn ghost" type="button" data-close>Continue shopping</button>
+    </div>
+
+    <div class="drawer-foot" id="cartFoot">
+      <dl class="totals">
+        <div><dt>Subtotal</dt><dd id="tSub"></dd></div>
+        <div><dt>Delivery</dt><dd id="tShip"></dd></div>
+        <div class="grand"><dt>Total</dt><dd id="tTotal"></dd></div>
+      </dl>
+      <p class="hint" id="shipHint"></p>
+      <button class="btn primary full" type="button" id="checkoutBtn">Checkout</button>
+      <button class="link-btn" type="button" id="clearCart">Clear cart</button>
+    </div>
+  </aside>
+
+  <!-- ===== Checkout modal ===== -->
+  <div class="modal" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="cTitle" hidden>
+    <div class="modal-card checkout-card">
+      <button class="close" type="button" data-close aria-label="Close">✕</button>
+
+      <div id="checkoutView">
+        <h3 id="cTitle">Checkout</h3>
+        <p class="sub">Demo checkout: no real payment is taken.</p>
+
+        <form id="checkoutForm" novalidate>
+          <div class="form-grid">
+            <label class="field">
+              <span>Full name *</span>
+              <input type="text" id="cName" autocomplete="name">
+              <em class="err" id="eName" hidden></em>
+            </label>
+            <label class="field">
+              <span>Phone *</span>
+              <input type="tel" id="cPhone" autocomplete="tel" placeholder="03XX XXXXXXX">
+              <em class="err" id="ePhone" hidden></em>
+            </label>
+            <label class="field wide">
+              <span>Email *</span>
+              <input type="email" id="cEmail" autocomplete="email">
+              <em class="err" id="eEmail" hidden></em>
+            </label>
+            <label class="field wide">
+              <span>Delivery address *</span>
+              <input type="text" id="cAddress" autocomplete="street-address">
+              <em class="err" id="eAddress" hidden></em>
+            </label>
+            <label class="field">
+              <span>City *</span>
+              <input type="text" id="cCity" autocomplete="address-level2">
+              <em class="err" id="eCity" hidden></em>
+            </label>
+            <label class="field">
+              <span>Payment</span>
+              <select id="cPay">
+                <option>Cash on delivery</option>
+                <option>Card (demo)</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="summary" id="checkoutSummary"></div>
+          <button class="btn primary full" type="submit">Place order</button>
+        </form>
+      </div>
+
+      <div id="successView" class="success" hidden>
+        <div class="tick" aria-hidden="true">✓</div>
+        <h3>Order placed!</h3>
+        <p>Thank you, <b id="sName"></b>. Your order <b id="sId"></b> is confirmed.</p>
+        <p class="sub" id="sInfo"></p>
+        <button class="btn primary" type="button" data-close>Continue shopping</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="products.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
