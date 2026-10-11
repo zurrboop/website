@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduTrack - Student Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top"><span class="brand-mark">E</span> EduTrack</a>
+      <p class="tagline">Student Management System</p>
+      <button class="btn primary" id="addBtn" type="button">+ Add student</button>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ===== Stats ===== -->
+    <section class="stats" aria-label="Summary">
+      <div class="stat s1"><span class="stat-ico" aria-hidden="true">🎓</span><div><b id="statTotal">0</b><small>Total students</small></div></div>
+      <div class="stat s2"><span class="stat-ico" aria-hidden="true">🏫</span><div><b id="statClasses">0</b><small>Classes</small></div></div>
+      <div class="stat s3"><span class="stat-ico" aria-hidden="true">📊</span><div><b id="statAvg">0%</b><small>Average score</small></div></div>
+      <div class="stat s4"><span class="stat-ico" aria-hidden="true">🏆</span><div><b id="statTop">-</b><small>Top scorer</small></div></div>
+    </section>
+
+    <!-- ===== Toolbar ===== -->
+    <section class="toolbar" aria-label="Search and filters">
+      <label class="search">
+        <span aria-hidden="true">🔍</span>
+        <input type="search" id="search" placeholder="Search by name, roll no, email or phone" autocomplete="off">
+      </label>
+
+      <label class="ctl">
+        <span>Class</span>
+        <select id="filterClass"></select>
+      </label>
+
+      <label class="ctl">
+        <span>Sort by</span>
+        <select id="sortBy">
+          <option value="name">Name (A to Z)</option>
+          <option value="roll">Roll number</option>
+          <option value="score">Score (high to low)</option>
+          <option value="newest">Recently added</option>
+        </select>
+      </label>
+
+      <button class="btn ghost" id="exportBtn" type="button">⬇ Export CSV</button>
+    </section>
+
+    <!-- ===== Table ===== -->
+    <section class="card table-card">
+      <div class="table-wrap">
+        <table id="table">
+          <thead>
+            <tr>
+              <th scope="col">Student</th>
+              <th scope="col">Roll no</th>
+              <th scope="col">Class</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Score</th>
+              <th scope="col"><span class="sr">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+
+      <div class="empty" id="emptyMsg" hidden>
+        <span aria-hidden="true">🗂️</span>
+        <p id="emptyText">No students found.</p>
+      </div>
+
+      <div class="pager" id="pager">
+        <p id="pageInfo"></p>
+        <div class="pager-btns" id="pageBtns"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>EduTrack &middot; Student project. Data is stored in this browser only.
+      <button class="link-btn" id="resetBtn" type="button">Reset demo data</button></p>
+  </footer>
+
+  <div class="overlay" id="overlay" hidden></div>
+
+  <!-- ===== Add / Edit modal ===== -->
+  <div class="modal" id="formModal" role="dialog" aria-modal="true" aria-labelledby="formTitle" hidden>
+    <div class="modal-card">
+      <button class="close" type="button" data-close aria-label="Close">✕</button>
+      <h2 id="formTitle">Add student</h2>
+      <p class="sub">Fields marked * are required.</p>
+
+      <form id="studentForm" novalidate>
+        <div class="form-grid">
+          <label class="field">
+            <span>Roll number *</span>
+            <input type="text" id="fRoll" maxlength="12" placeholder="e.g. CS-101" autocomplete="off">
+            <em class="err" id="eRoll" hidden></em>
+          </label>
+
+          <label class="field">
+            <span>Full name *</span>
+            <input type="text" id="fName" maxlength="50" placeholder="e.g. Ayesha Malik" autocomplete="off">
+            <em class="err" id="eName" hidden></em>
+          </label>
+
+          <fieldset class="field">
+            <legend>Gender</legend>
+            <div class="radios">
+              <label><input type="radio" name="gender" value="Female" checked> Female</label>
+              <label><input type="radio" name="gender" value="Male"> Male</label>
+            </div>
+          </fieldset>
+
+          <label class="field">
+            <span>Class *</span>
+            <select id="fClass"></select>
+          </label>
+
+          <label class="field">
+            <span>Email *</span>
+            <input type="email" id="fEmail" maxlength="80" placeholder="name@example.com" autocomplete="off">
+            <em class="err" id="eEmail" hidden></em>
+          </label>
+
+          <label class="field">
+            <span>Phone *</span>
+            <input type="tel" id="fPhone" maxlength="16" placeholder="03XX XXXXXXX" autocomplete="off">
+            <em class="err" id="ePhone" hidden></em>
+          </label>
+
+          <label class="field wide">
+            <span>Score (%) <small>optional</small></span>
+            <input type="number" id="fScore" min="0" max="100" step="0.1" placeholder="0 to 100">
+            <em class="err" id="eScore" hidden></em>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn ghost" type="button" data-close>Cancel</button>
+          <button class="btn primary" type="submit" id="saveBtn">Save student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== Delete confirm modal ===== -->
+  <div class="modal" id="confirmModal" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" hidden>
+    <div class="modal-card small">
+      <h2 id="confirmTitle">Delete student?</h2>
+      <p class="sub" id="confirmText"></p>
+      <div class="form-actions">
+        <button class="btn ghost" type="button" data-close>Cancel</button>
+        <button class="btn danger" type="button" id="confirmDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
